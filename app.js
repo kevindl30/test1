@@ -41,7 +41,8 @@ const state = {
   posts: [...samplePosts],
   keyword: "lost dog",
   lastNewPostId: null,
-  nextId: samplePosts.length + 1
+  nextId: samplePosts.length + 1,
+  selectedPostId: null
 };
 
 const keywordInput = document.querySelector("#keyword-input");
@@ -101,19 +102,53 @@ function renderPosts(matches) {
     .map((post) => {
       const isMatch = matchIds.has(post.id);
       const isNew = post.id === state.lastNewPostId;
-      const classes = ["post", isMatch ? "match" : "", isNew ? "new" : ""].filter(Boolean).join(" ");
+      const isSelected = post.id === state.selectedPostId;
+      const classes = ["post", isMatch ? "match" : "", isNew ? "new" : "", isSelected ? "selected" : ""]
+        .filter(Boolean)
+        .join(" ");
 
       return `
-        <article class="${classes}">
+        <article class="${classes}" data-post-id="${post.id}" tabindex="0">
           <div class="post-header">
             <h3>${escapeHtml(post.author)}</h3>
-            <span class="meta">${escapeHtml(post.area)} · ${post.minutesAgo} min ago</span>
+            <span class="meta">${escapeHtml(post.area)} &middot; ${post.minutesAgo} min ago</span>
           </div>
           <p>${highlightText(post.text, state.keyword)}</p>
+          ${renderReplySection(post, isSelected)}
         </article>
       `;
     })
     .join("");
+}
+
+function renderReplySection(post, isSelected) {
+  const replies = post.replies || [];
+  const replyList = replies
+    .map((reply) => `<li>${escapeHtml(reply)}</li>`)
+    .join("");
+
+  if (!isSelected) {
+    return `
+      <div class="reply-summary">
+        <span>${replies.length} ${replies.length === 1 ? "reply" : "replies"}</span>
+        <span>Click post to reply</span>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="reply-panel">
+      <form class="reply-form" data-reply-post-id="${post.id}">
+        <label for="reply-${post.id}">Reply to this post</label>
+        <textarea id="reply-${post.id}" name="reply" rows="3" placeholder="Type a helpful neighbor reply..."></textarea>
+        <button type="submit">Submit Reply</button>
+      </form>
+      <div class="replies">
+        <h4>${replies.length ? "Replies" : "No replies yet"}</h4>
+        ${replies.length ? `<ul>${replyList}</ul>` : "<p>Be the first to respond.</p>"}
+      </div>
+    </div>
+  `;
 }
 
 function updateSummary(matches) {
@@ -152,7 +187,8 @@ function simulateNewPost() {
     author: "New Neighbor",
     area: "Live Demo",
     minutesAgo: 0,
-    text
+    text,
+    replies: []
   };
 
   state.nextId += 1;
@@ -167,6 +203,59 @@ keywordInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     scanFeed();
   }
+});
+postList.addEventListener("click", (event) => {
+  if (event.target.closest(".reply-form")) {
+    return;
+  }
+
+  const post = event.target.closest(".post");
+  if (!post) {
+    return;
+  }
+
+  state.selectedPostId = Number(post.dataset.postId);
+  scanFeed();
+});
+postList.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  const post = event.target.closest(".post");
+  if (!post) {
+    return;
+  }
+
+  event.preventDefault();
+  state.selectedPostId = Number(post.dataset.postId);
+  scanFeed();
+});
+postList.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const form = event.target.closest(".reply-form");
+  const postId = Number(form.dataset.replyPostId);
+  const replyInput = form.elements.reply;
+  const replyText = replyInput.value.trim();
+
+  if (!replyText) {
+    replyInput.focus();
+    return;
+  }
+
+  state.posts = state.posts.map((post) => {
+    if (post.id !== postId) {
+      return post;
+    }
+
+    return {
+      ...post,
+      replies: [...(post.replies || []), replyText]
+    };
+  });
+  state.selectedPostId = postId;
+  scanFeed();
 });
 
 scanFeed();
