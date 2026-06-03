@@ -19,4 +19,65 @@ Paste this into Codex:
 
 ```text
 Inspect this repo. Tell me what kind of app it is, how it works, and how I could deploy it to Vercel. Do not edit files yet.
+```
 
+## Pick Your MVP Idea
+
+After Codex explains the repo, paste:
+
+```text
+Help me turn this starter into a 3-hour MVP. Ask me for the app idea first, then identify any external platform or API risks. Propose the smallest 4-step implementation plan. Do not edit files yet.
+```
+
+## Implement In Small Steps
+
+Use this pattern:
+
+```text
+Implement step 1 only. Keep the change small. Tell me what changed and what I should test.
+```
+
+Then continue one step at a time:
+
+```text
+Now implement step 2 only. Keep it focused and preserve the app's deployability to Vercel.
+```
+
+## If GitHub Integration Is Blocked
+
+If Codex cannot directly access or edit your GitHub repo, ask for manual instructions:
+
+```text
+GitHub integration is blocked. Give me full replacement contents for each file that needs to change, and tell me exactly where each file belongs.
+```
+
+## Deploy To Vercel
+
+Ask Codex:
+
+```text
+Check whether this app is ready for Vercel deployment. Identify any blockers and suggest the smallest fix.
+```
+
+For this static starter app, Vercel settings should usually be:
+
+```text
+Framework Preset: Other
+Build Command: npm run build
+Output Directory: .
+```
+
+## MVP Rules
+
+- Build the smallest demoable version first.
+- Use mock data when real APIs are blocked or slow.
+- Avoid scraping websites or private platform data.
+- Add one feature at a time.
+- Review Codex changes before deploying.
+- Keep the app deployable throughout the hackathon.
+
+## Example Starting App
+
+The included app is a mock neighborhood keyword alert tool. It scans sample posts for a keyword, highlights matches, and shows an alert when a simulated new post matches.
+
+It does not connect to Nextdoor or scrape any social platform. It is intentionally mock-data-first so you can focus on the MVP workflow.
