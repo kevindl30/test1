@@ -269,11 +269,13 @@ button.secondary:hover {
   cursor: default;
 }
 
+.post-photo-form,
 .reply-form {
   display: grid;
   gap: 10px;
 }
 
+.post-photo-form label,
 .reply-form label {
   color: var(--brand-dark);
   font-weight: 800;
@@ -291,6 +293,44 @@ button.secondary:hover {
 
 .reply-form button {
   justify-self: start;
+}
+
+.file-label {
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+.file-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+input[type="file"] {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px;
+  border: 1px dashed #b7d3c7;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--muted);
+}
+
+.photo-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.uploaded-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
 }
 
 .replies {
@@ -321,6 +361,11 @@ button.secondary:hover {
   line-height: 1.45;
 }
 
+.replies li {
+  display: grid;
+  gap: 8px;
+}
+
 mark {
   padding: 0 2px;
   border-radius: 3px;
@@ -336,6 +381,10 @@ mark {
 
   .controls {
     grid-template-columns: minmax(180px, 1fr) auto auto;
+  }
+
+  .file-row {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 }
 
