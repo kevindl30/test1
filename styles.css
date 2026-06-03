@@ -27,7 +27,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -198,11 +199,26 @@ button.secondary:hover {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.post:hover,
+.post:focus {
+  border-color: #9fc8ba;
+  box-shadow: 0 10px 26px rgba(21, 35, 47, 0.08);
+  outline: none;
+  transform: translateY(-1px);
 }
 
 .post.match {
   border-color: var(--alert-line);
   background: #fffaf0;
+}
+
+.post.selected {
+  border-color: var(--brand);
+  box-shadow: 0 12px 30px rgba(21, 35, 47, 0.12);
 }
 
 .post.new {
@@ -230,6 +246,79 @@ button.secondary:hover {
 .post p {
   margin-bottom: 0;
   line-height: 1.55;
+}
+
+.reply-summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.reply-panel {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  cursor: default;
+}
+
+.reply-form {
+  display: grid;
+  gap: 10px;
+}
+
+.reply-form label {
+  color: var(--brand-dark);
+  font-weight: 800;
+}
+
+.reply-form textarea {
+  width: 100%;
+  min-height: 92px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+}
+
+.reply-form button {
+  justify-self: start;
+}
+
+.replies {
+  display: grid;
+  gap: 8px;
+}
+
+.replies h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.replies ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.replies li,
+.replies p {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  line-height: 1.45;
 }
 
 mark {
