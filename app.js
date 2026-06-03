@@ -47,13 +47,17 @@ const simulatedPosts = [
   "Garage sale this weekend with kids bikes, books, and kitchen supplies."
 ];
 
-const state = {
-  posts: [...samplePosts],
+const STORAGE_KEY = "neighborKeywordAlertState";
+
+const defaultState = {
+  posts: clonePosts(samplePosts),
   keyword: "lost dog",
   lastNewPostId: null,
   nextId: samplePosts.length + 1,
   selectedPostId: null
 };
+
+const state = loadState();
 
 const keywordInput = document.querySelector("#keyword-input");
 const scanButton = document.querySelector("#scan-button");
@@ -63,6 +67,56 @@ const postList = document.querySelector("#post-list");
 const postCount = document.querySelector("#post-count");
 const matchCount = document.querySelector("#match-count");
 const lastScan = document.querySelector("#last-scan");
+
+keywordInput.value = state.keyword;
+
+function clonePosts(posts) {
+  return JSON.parse(JSON.stringify(posts));
+}
+
+function loadState() {
+  try {
+    const savedState = localStorage.getItem(STORAGE_KEY);
+
+    if (!savedState) {
+      return { ...defaultState, posts: clonePosts(defaultState.posts) };
+    }
+
+    const parsedState = JSON.parse(savedState);
+
+    return {
+      ...defaultState,
+      ...parsedState,
+      posts: Array.isArray(parsedState.posts) ? parsedState.posts : clonePosts(defaultState.posts),
+      selectedPostId: null
+    };
+  } catch (error) {
+    return { ...defaultState, posts: clonePosts(defaultState.posts) };
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        posts: state.posts,
+        keyword: state.keyword,
+        lastNewPostId: state.lastNewPostId,
+        nextId: state.nextId
+      })
+    );
+  } catch (error) {
+    alertPanel.classList.add("active");
+    alertPanel.innerHTML = `
+      <div>
+        <p class="panel-label">Storage notice</p>
+        <h2>Changes are visible now but may not persist</h2>
+      </div>
+      <p>Your browser storage may be full, often because uploaded photos are large.</p>
+    `;
+  }
+}
 
 function normalize(value) {
   return value.trim().toLowerCase();
@@ -97,6 +151,7 @@ function escapeRegExp(value) {
 
 function scanFeed({ alertOnNewMatch = false } = {}) {
   state.keyword = normalize(keywordInput.value);
+  saveState();
   const matches = state.posts.filter((post) => postMatches(post, state.keyword));
   const newestPost = state.posts.find((post) => post.id === state.lastNewPostId);
   const newestPostMatches = newestPost && postMatches(newestPost, state.keyword);
@@ -243,6 +298,7 @@ function simulateNewPost() {
   state.nextId += 1;
   state.lastNewPostId = post.id;
   state.posts = [post, ...state.posts.map((existing) => ({ ...existing, minutesAgo: existing.minutesAgo + 3 }))];
+  saveState();
   scanFeed({ alertOnNewMatch: true });
 }
 
@@ -318,6 +374,7 @@ async function submitPostPhoto(form) {
     };
   });
   state.selectedPostId = postId;
+  saveState();
   scanFeed();
 }
 
@@ -350,6 +407,7 @@ async function submitReply(form) {
     };
   });
   state.selectedPostId = postId;
+  saveState();
   scanFeed();
 }
 
