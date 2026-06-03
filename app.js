@@ -4,7 +4,14 @@ const samplePosts = [
     author: "Maya P.",
     area: "Cedar Grove",
     minutesAgo: 9,
-    text: "Has anyone seen a small brown lost dog near Elm and 4th? He has a blue collar and is very friendly."
+    text: "Has anyone seen a small brown lost dog near Elm and 4th? He has a blue collar and is very friendly.",
+    photos: ["assets/lost-dog-brown.png"],
+    replies: [
+      {
+        text: "This pup looks ready for a neighborhood adventure. I will keep an eye out.",
+        photo: "assets/lost-dog-detective.png"
+      }
+    ]
   },
   {
     id: 2,
@@ -30,7 +37,10 @@ const samplePosts = [
 ];
 
 const simulatedPosts = [
-  "I found a lost dog wandering near the school playground. Message me if this sounds like yours.",
+  {
+    text: "I found a lost dog wandering near the school playground. Message me if this sounds like yours.",
+    photos: ["assets/lost-dog-brown.png"]
+  },
   "Anyone have recommendations for a plumber who can come out today?",
   "Heads up: car break-in reported near Willow Court last night.",
   "Found keys on the trail by the pond. They are at my front desk now.",
@@ -218,13 +228,15 @@ function updateAlert(matches, newestPost, newMatchFound) {
 }
 
 function simulateNewPost() {
-  const text = simulatedPosts[(state.nextId - samplePosts.length - 1) % simulatedPosts.length];
+  const simulatedPost = simulatedPosts[(state.nextId - samplePosts.length - 1) % simulatedPosts.length];
+  const postData = typeof simulatedPost === "string" ? { text: simulatedPost } : simulatedPost;
   const post = {
     id: state.nextId,
     author: "New Neighbor",
     area: "Live Demo",
     minutesAgo: 0,
-    text,
+    text: postData.text,
+    photos: postData.photos || [],
     replies: []
   };
 
