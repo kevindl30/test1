@@ -17,55 +17,41 @@ Build a demoable MVP app in 3 hours using Codex UI, GitHub, and Vercel.
 
 Paste this into Codex:
 
-```text
-Inspect this repo. Tell me what kind of app it is, how it works, and how I could deploy it to Vercel. Do not edit files yet.
-```
+> Inspect this repo. Tell me what kind of app it is, how it works, and how I could deploy it to Vercel. Do not edit files yet.
 
 ## Pick Your MVP Idea
 
 After Codex explains the repo, paste:
 
-```text
-Help me turn this starter into a 3-hour MVP. Ask me for the app idea first, then identify any external platform or API risks. Propose the smallest 4-step implementation plan. Do not edit files yet.
-```
+> Help me turn this starter into a 3-hour MVP. Ask me for the app idea first, then identify any external platform or API risks. Propose the smallest 4-step implementation plan. Do not edit files yet.
 
 ## Implement In Small Steps
 
 Use this pattern:
 
-```text
-Implement step 1 only. Keep the change small. Tell me what changed and what I should test.
-```
+> Implement step 1 only. Keep the change small. Tell me what changed and what I should test.
 
 Then continue one step at a time:
 
-```text
-Now implement step 2 only. Keep it focused and preserve the app's deployability to Vercel.
-```
+> Now implement step 2 only. Keep it focused and preserve the app's deployability to Vercel.
 
 ## If GitHub Integration Is Blocked
 
 If Codex cannot directly access or edit your GitHub repo, ask for manual instructions:
 
-```text
-GitHub integration is blocked. Give me full replacement contents for each file that needs to change, and tell me exactly where each file belongs.
-```
+> GitHub integration is blocked. Give me full replacement contents for each file that needs to change, and tell me exactly where each file belongs.
 
 ## Deploy To Vercel
 
 Ask Codex:
 
-```text
-Check whether this app is ready for Vercel deployment. Identify any blockers and suggest the smallest fix.
-```
+> Check whether this app is ready for Vercel deployment. Identify any blockers and suggest the smallest fix.
 
 For this static starter app, Vercel settings should usually be:
 
-```text
-Framework Preset: Other
-Build Command: npm run build
-Output Directory: .
-```
+- Framework Preset: Other
+- Build Command: npm run build
+- Output Directory: .
 
 ## MVP Rules
 
