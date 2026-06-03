@@ -114,6 +114,7 @@ function renderPosts(matches) {
             <span class="meta">${escapeHtml(post.area)} &middot; ${post.minutesAgo} min ago</span>
           </div>
           <p>${highlightText(post.text, state.keyword)}</p>
+          ${renderPostPhotos(post)}
           ${renderReplySection(post, isSelected)}
         </article>
       `;
@@ -124,7 +125,16 @@ function renderPosts(matches) {
 function renderReplySection(post, isSelected) {
   const replies = post.replies || [];
   const replyList = replies
-    .map((reply) => `<li>${escapeHtml(reply)}</li>`)
+    .map((reply) => {
+      const normalizedReply = typeof reply === "string" ? { text: reply, photo: "" } : reply;
+
+      return `
+        <li>
+          <p>${escapeHtml(normalizedReply.text)}</p>
+          ${normalizedReply.photo ? renderPhoto(normalizedReply.photo, "Reply photo") : ""}
+        </li>
+      `;
+    })
     .join("");
 
   if (!isSelected) {
@@ -138,9 +148,18 @@ function renderReplySection(post, isSelected) {
 
   return `
     <div class="reply-panel">
+      <form class="post-photo-form" data-photo-post-id="${post.id}">
+        <label for="post-photo-${post.id}">Add a photo to this post</label>
+        <div class="file-row">
+          <input id="post-photo-${post.id}" name="photo" type="file" accept="image/*" />
+          <button type="submit" class="secondary">Upload Photo</button>
+        </div>
+      </form>
       <form class="reply-form" data-reply-post-id="${post.id}">
         <label for="reply-${post.id}">Reply to this post</label>
         <textarea id="reply-${post.id}" name="reply" rows="3" placeholder="Type a helpful neighbor reply..."></textarea>
+        <label class="file-label" for="reply-photo-${post.id}">Attach a reply photo</label>
+        <input id="reply-photo-${post.id}" name="photo" type="file" accept="image/*" />
         <button type="submit">Submit Reply</button>
       </form>
       <div class="replies">
@@ -149,6 +168,24 @@ function renderReplySection(post, isSelected) {
       </div>
     </div>
   `;
+}
+
+function renderPostPhotos(post) {
+  const photos = post.photos || [];
+
+  if (!photos.length) {
+    return "";
+  }
+
+  return `
+    <div class="photo-strip" aria-label="Post photos">
+      ${photos.map((photo) => renderPhoto(photo, "Post photo")).join("")}
+    </div>
+  `;
+}
+
+function renderPhoto(src, alt) {
+  return `<img class="uploaded-photo" src="${escapeHtml(src)}" alt="${alt}" />`;
 }
 
 function updateSummary(matches) {
@@ -205,7 +242,7 @@ keywordInput.addEventListener("keydown", (event) => {
   }
 });
 postList.addEventListener("click", (event) => {
-  if (event.target.closest(".reply-form")) {
+  if (event.target.closest(".reply-form") || event.target.closest(".post-photo-form")) {
     return;
   }
 
@@ -231,15 +268,55 @@ postList.addEventListener("keydown", (event) => {
   state.selectedPostId = Number(post.dataset.postId);
   scanFeed();
 });
-postList.addEventListener("submit", (event) => {
+postList.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  const photoForm = event.target.closest(".post-photo-form");
+  if (photoForm) {
+    await submitPostPhoto(photoForm);
+    return;
+  }
+
   const form = event.target.closest(".reply-form");
+  if (!form) {
+    return;
+  }
+
+  await submitReply(form);
+});
+
+async function submitPostPhoto(form) {
+  const postId = Number(form.dataset.photoPostId);
+  const photoInput = form.elements.photo;
+  const photo = await readImageFile(photoInput);
+
+  if (!photo) {
+    photoInput.focus();
+    return;
+  }
+
+  state.posts = state.posts.map((post) => {
+    if (post.id !== postId) {
+      return post;
+    }
+
+    return {
+      ...post,
+      photos: [...(post.photos || []), photo]
+    };
+  });
+  state.selectedPostId = postId;
+  scanFeed();
+}
+
+async function submitReply(form) {
   const postId = Number(form.dataset.replyPostId);
   const replyInput = form.elements.reply;
+  const photoInput = form.elements.photo;
   const replyText = replyInput.value.trim();
+  const photo = await readImageFile(photoInput);
 
-  if (!replyText) {
+  if (!replyText && !photo) {
     replyInput.focus();
     return;
   }
@@ -251,11 +328,32 @@ postList.addEventListener("submit", (event) => {
 
     return {
       ...post,
-      replies: [...(post.replies || []), replyText]
+      replies: [
+        ...(post.replies || []),
+        {
+          text: replyText || "Shared a photo.",
+          photo
+        }
+      ]
     };
   });
   state.selectedPostId = postId;
   scanFeed();
-});
+}
+
+function readImageFile(input) {
+  const file = input.files && input.files[0];
+
+  if (!file) {
+    return Promise.resolve("");
+  }
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsDataURL(file);
+  });
+}
 
 scanFeed();
