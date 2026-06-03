@@ -1,69 +1,70 @@
-# Hackathon 26 Starter
+# Neighbor Keyword Alert
 
-This repo contains a tiny deployable MVP app. Your job is to use Codex to inspect it, understand it, modify it, and deploy your own version in 3 hours.
+Neighbor Keyword Alert is a deployable MVP that turns a noisy neighborhood feed into a focused alert system.
 
-## Goal
+The app lets a user enter a keyword, scan fictional neighborhood-style posts, highlight matching posts, and get an alert when a new matching post appears. Users can also click a post, submit a reply, and attach photos to posts or replies.
 
-Build a demoable MVP app in 3 hours using Codex UI, GitHub, and Vercel.
+This demo intentionally uses mock Nextdoor-like posts instead of scraping or connecting to a real social platform. A production version would use approved platform APIs and would not access private content without permission.
 
-## Tools
+## Who It Helps
 
-- Codex UI
-- GitHub
-- Vercel
-- Any approved editor, if needed
+This app is for people who care about timely local updates but do not want to constantly monitor every neighborhood post.
 
-## Start With Codex
+Examples include:
 
-Paste this into Codex:
+- Pet owners watching for lost or found pet posts
+- Parents monitoring safety alerts near schools or parks
+- Neighbors looking for urgent community updates
+- Local volunteers helping with lost pets, mutual aid, or neighborhood watch
+- Busy residents who only want alerts for topics they care about
 
-> Inspect this repo. Tell me what kind of app it is, how it works, and how I could deploy it to Vercel. Do not edit files yet.
+## What It Does
 
-## Pick Your MVP Idea
+- Monitors a fictional neighborhood feed for a user-defined keyword
+- Highlights matching posts in the feed
+- Shows an alert when a simulated new post matches the keyword
+- Lets users click a post and submit a reply
+- Lets users attach photos to posts and replies
+- Persists the keyword, posts, replies, uploaded photos, and simulated posts with `localStorage`
 
-After Codex explains the repo, paste:
+## How To Demo
 
-> Help me turn this starter into a 3-hour MVP. Ask me for the app idea first, then identify any external platform or API risks. Propose the smallest 4-step implementation plan. Do not edit files yet.
+1. Open the deployed app.
+2. Leave the keyword as `lost dog`, or enter a different keyword.
+3. Click **Scan Feed** to highlight matching posts.
+4. Click **Simulate New Post** to trigger a new matching alert.
+5. Click a post to open the reply panel.
+6. Add a reply and submit it.
+7. Attach a photo to a post or reply.
+8. Refresh the page to show that replies, photos, and simulated posts persist locally.
 
-## Implement In Small Steps
+## How It Was Built
 
-Use this pattern:
+The app is built with plain HTML, CSS, and JavaScript.
 
-> Implement step 1 only. Keep the change small. Tell me what changed and what I should test.
+- `index.html` defines the page structure.
+- `styles.css` styles the dashboard, alerts, posts, replies, and photo previews.
+- `app.js` manages keyword scanning, simulated posts, replies, photo previews, and `localStorage` persistence.
 
-Then continue one step at a time:
+No framework, backend, database, or external API is required for the demo.
 
-> Now implement step 2 only. Keep it focused and preserve the app's deployability to Vercel.
+## Run Locally
 
-## If GitHub Integration Is Blocked
-
-If Codex cannot directly access or edit your GitHub repo, ask for manual instructions:
-
-> GitHub integration is blocked. Give me full replacement contents for each file that needs to change, and tell me exactly where each file belongs.
+Open `index.html` in a browser.
 
 ## Deploy To Vercel
 
-Ask Codex:
+Import the GitHub repo into Vercel.
 
-> Check whether this app is ready for Vercel deployment. Identify any blockers and suggest the smallest fix.
+Use these settings:
 
-For this static starter app, Vercel settings should usually be:
+- Framework Preset: `Other`
+- Build Command: `npm run build`
+- Output Directory: `.`
 
-- Framework Preset: Other
-- Build Command: npm run build
-- Output Directory: .
+## Limitations
 
-## MVP Rules
-
-- Build the smallest demoable version first.
-- Use mock data when real APIs are blocked or slow.
-- Avoid scraping websites or private platform data.
-- Add one feature at a time.
-- Review Codex changes before deploying.
-- Keep the app deployable throughout the hackathon.
-
-## Example Starting App
-
-The included app is a mock neighborhood keyword alert tool. It scans sample posts for a keyword, highlights matches, and shows an alert when a simulated new post matches.
-
-It does not connect to Nextdoor or scrape any social platform. It is intentionally mock-data-first so you can focus on the MVP workflow.
+- The feed is mock data.
+- Uploaded photos are stored in browser `localStorage`, so very large images may exceed browser storage limits.
+- Data persists only in the current browser, not across users or devices.
+- A real Nextdoor integration would require official API access or another approved data source.
