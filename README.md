@@ -6,6 +6,13 @@ This repo contains a tiny deployable MVP app. Your job is to use Codex to inspec
 
 Build a demoable MVP app in 3 hours using Codex UI, GitHub, and Vercel.
 
+## Tools
+
+- Codex UI
+- GitHub
+- Vercel
+- Any approved editor, if needed
+
 ## Start With Codex
 
 Paste this into Codex:
