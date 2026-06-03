@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighbor Keyword Alert</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="toolbar" aria-labelledby="app-title">
+        <div>
+          <p class="eyebrow">Mock neighborhood monitor</p>
+          <h1 id="app-title">Neighbor Keyword Alert</h1>
+        </div>
+
+        <div class="controls" aria-label="Keyword monitor controls">
+          <label class="search-field" for="keyword-input">
+            <span>Keyword</span>
+            <input id="keyword-input" type="text" value="lost dog" autocomplete="off" />
+          </label>
+          <button id="scan-button" type="button">Scan Feed</button>
+          <button id="new-post-button" type="button" class="secondary">Simulate New Post</button>
+        </div>
+      </section>
+
+      <section id="alert-panel" class="alert-panel" aria-live="polite">
+        <div>
+          <p class="panel-label">Alert status</p>
+          <h2>No new matching posts yet</h2>
+        </div>
+        <p>Set a keyword, scan the feed, then simulate a new post to demo the alert.</p>
+      </section>
+
+      <section class="summary-grid" aria-label="Scan summary">
+        <article>
+          <span id="post-count">0</span>
+          <p>Total posts</p>
+        </article>
+        <article>
+          <span id="match-count">0</span>
+          <p>Matches</p>
+        </article>
+        <article>
+          <span id="last-scan">Not scanned</span>
+          <p>Last scan</p>
+        </article>
+      </section>
+
+      <section class="feed-section" aria-labelledby="feed-title">
+        <div class="section-heading">
+          <h2 id="feed-title">Neighborhood Feed</h2>
+          <p>Sample posts are intentionally fictional and Nextdoor-like for demo purposes.</p>
+        </div>
+        <div id="post-list" class="post-list"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
